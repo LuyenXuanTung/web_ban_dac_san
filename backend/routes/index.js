@@ -22,7 +22,7 @@ const {
   getProductsByManyId,
 } = require("../controller/productController");
 const { addToCart, countProductInCart, getCart, updateQuantity, removeProductCart } = require("../controller/cartController");
-const { addOrder, getOrder } = require("../controller/orderController");
+const { addOrder, getOrder, setStatusOrder } = require("../controller/orderController");
 
 const router = express.Router();
 
@@ -61,6 +61,7 @@ router.post("/remove-product-cart", authToken, removeProductCart);
 //order
 router.post("/order", authToken, addOrder);
 router.get("/all-order", authToken, getOrder);
+router.post("/status-order", authToken, setStatusOrder);
 
 
 

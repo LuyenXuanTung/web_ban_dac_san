@@ -14,6 +14,7 @@ import Warehouse from "../admin/page/Warehouse";
 import ProductClient from "../page/Product";
 import Cart from "../page/Cart";
 import Order from "../admin/page/Order";
+import MyOrder from "../page/MyOrder";
 
 
 const router = createBrowserRouter([
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
           {
             path: "/cart",
             element: <Cart />,
+          },
+          {
+            path: "/my-order",
+            element: <MyOrder />,
           },
         ]
       },

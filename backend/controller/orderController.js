@@ -85,7 +85,57 @@ async function getOrder(req, res) {
   }
 }
 
+async function setStatusOrder(req, res) {
+  try {
+    if (!checkRoleAdmin(req.userId)) {
+      throw new Error("Bạn không có quyền truy cập");
+    }
+
+    const {value, orderId} = req.body
+
+    const cartCurrent = await order.findById(orderId)
+
+    if(!cartCurrent){
+      throw new Error("Không có đơn hàng này")
+    }
+
+    cartCurrent.status = value
+    await cartCurrent.save()
+
+    let message = ''
+   if(value === 'WAITING'){
+    message = "Đơn hàng chưa được xác nhận"
+   }
+   else if(value === 'CONFIRMED'){
+     message = "Đơn hàng đã được xác nhận"
+   }
+   else if(value === 'CANCEL'){
+     message = "Đơn hàng đã hủy"
+   }
+   else if(value === 'SHIPPING'){
+     message = "Đơn hàng đang được giao"
+   }
+   else if(value === 'COMPLETED'){
+     message = "Đơn hàng đã được giao"
+   }
+    
+    res.json({
+      message,
+      data: value,
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    res.json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
 module.exports = {
     addOrder,
-    getOrder
+    getOrder,
+    setStatusOrder
 }

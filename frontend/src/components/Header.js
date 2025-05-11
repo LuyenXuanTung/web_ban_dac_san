@@ -67,9 +67,9 @@ const Header = () => {
                     <div className="px-4 py-2 text-black w-full text-center hover:bg-slate-200">
                       Tài khoản
                     </div>
-                    <div className="py-2 text-black w-full text-center hover:bg-slate-200">
+                    <Link to={'/my-order'} className="block py-2 text-black w-full text-center hover:bg-slate-200">
                       Đơn hàng của bạn
-                    </div>
+                    </Link>
                     <button
                       className="px-4 py-2 text-black w-full text-center hover:bg-slate-200 border-t-[1px] border-t-slate-400"
                       onClick={handleLogout}

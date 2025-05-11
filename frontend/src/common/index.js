@@ -99,6 +99,10 @@ const SummaryApi = {
         url: `${backendDomain}/all-order`,
         method: 'get'
     },
+    setStatusOrder: {
+        url: `${backendDomain}/status-order`,
+        method: 'post'
+    },
 }
 
 export default SummaryApi
