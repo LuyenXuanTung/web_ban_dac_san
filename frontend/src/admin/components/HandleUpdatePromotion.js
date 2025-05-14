@@ -144,7 +144,7 @@ const HandleUpdatePromotion = ({onClose,updatePromotion,setAllProduct}) => {
             type="number"
             id="discount"
             name="discount"
-            placeholder="enter price"
+            placeholder="Nhập số lượng"
             value={data.discount}
             onChange={handleOnchange}
             className="p-2 bg-slate-100 border rounded"

@@ -1,23 +1,32 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import FilterProduct from '../components/FilterProduct'
 import province from '../data/province'
 import category from '../data/category'
 import {FaAngleDown,FaAngleUp } from "react-icons/fa";
 import ProductCard from '../components/ProductCard';
+import CountProduct from '../context/countProduct';
 import fetchAllProduct from '../helpers/fetchAllProduct';
 
 
 const Product = () => {
+  const {allProducts,setAllProducts} = useContext(CountProduct)
   const [products, setProducts] = useState([])
 
   
   useEffect(() => {
-    fetchAllProduct(setProducts)
+    if(allProducts.length > 0){
+      setProducts(allProducts)
+    }else{
+      fetchAllProduct(setProducts)
+    }
+    
     window.scrollTo({
       top: 0,
       behavior: 'smooth'
     })
-  },[])
+
+
+  },[allProducts])
 
   const handleSortBy = (e) => {
     const {value} = e.target

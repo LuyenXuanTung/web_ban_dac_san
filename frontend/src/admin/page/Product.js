@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import UploadProduct from '../components/UploadProduct'
 import ProductCard from '../components/ProductCard'
-import fetchAllProduct from '../../helpers/fetchAllProduct'
+import  { fetchAllProductInAdmin } from '../../helpers/fetchAllProduct'
 import SummaryApi from '../../common'
 
 
@@ -15,7 +15,7 @@ const Product = () => {
 
 
   useEffect(() => {
-    fetchAllProduct(setAllProduct)
+    fetchAllProductInAdmin(setAllProduct)
   },[])
   return (
     <div className='p-4'>

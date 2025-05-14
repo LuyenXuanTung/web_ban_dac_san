@@ -19,4 +19,23 @@ const fetchAllProduct = async (setAllProduct) => {
         }
 }
 
+const fetchAllProductInAdmin = async (setAllProduct) => {
+        const fetchData = await fetch(SummaryApi.allProductInAdmin.url,{
+          method: SummaryApi.allProductInAdmin.method,
+          credentials: 'include'
+        })
+    
+        const dataResponse = await fetchData.json()
+    
+        if(dataResponse.success){
+          setAllProduct(dataResponse.data)
+        }
+    
+        if(dataResponse.error){
+          toast.error(dataResponse.message)
+        }
+}
+
+export {fetchAllProductInAdmin}
+
 export default fetchAllProduct

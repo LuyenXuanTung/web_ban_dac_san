@@ -12,6 +12,8 @@ const Home = () => {
   const [countProduct, setCountProduct] = useState(0)
   const [cartItems, setCartItems] = useState([]);
   const [productDetailsId, setProductDetailsId] = useState(null)
+  const [allProducts, setAllProducts] = useState([])
+  
 
   const fetchCountProductInCart = async () => {
     const dataApi = await fetch(SummaryApi.countProductInCart.url, {
@@ -29,6 +31,10 @@ const Home = () => {
   useEffect(() => {
     fetchCountProductInCart()
     fetchCartItems(setCartItems);
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
   },[])
 
   return (
@@ -41,6 +47,8 @@ const Home = () => {
           setCartItems,
           productDetailsId,
           setProductDetailsId,
+          allProducts,
+          setAllProducts
         }}
       >
         <Header />

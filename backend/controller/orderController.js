@@ -39,6 +39,7 @@ async function addOrder(req, res) {
       updateQuantity.forEach(async (p) => {
         const udProduct = await product.findById(p.productId)
         udProduct.quantity -= p.quantity
+        udProduct.total_pay += p.quantity
         await udProduct.save()
       })
 

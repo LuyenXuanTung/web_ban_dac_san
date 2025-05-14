@@ -17,8 +17,11 @@ const ProductCard = ({ product, border }) => {
   }
 
   return (
-    <Link to={"/product-details/" + product?.name} onClick={() => context.setProductDetailsId(product?._id)}>
-      <div className={`${border && border+' rounded-md overflow-hidden'} `}>
+    <Link
+      to={"/product-details/" + product?.name}
+      onClick={() => context.setProductDetailsId(product?._id)}
+    >
+      <div className={`${border && border + " rounded-md overflow-hidden"} `}>
         <div className={`w-full h-48 overflow-hidden `}>
           <img
             src={product.image[0]}
@@ -33,12 +36,12 @@ const ProductCard = ({ product, border }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center text-yellow-500">
               <span className="text-gray-500 text-sm mr-1">4.9</span>
-              <FaStar className='text-sm'/>
+              <FaStar className="text-sm" />
               <span className="ml-1 text-sm text-gray-500">
                 ({product?.total_pay} đã bán)
               </span>
             </div>
-              
+
             <span className="text-sm p-1 bg-red-100 text-red-500">
               -{product?.promotion}%
             </span>
@@ -53,12 +56,21 @@ const ProductCard = ({ product, border }) => {
           </div>
         </div>
         <div className="flex justify-center items-center px-4  py-2">
-          <button
-            className="bg-green-600 w-full text-white py-2 rounded-sm hover:bg-green-700 transition duration-200 line-clamp-1"
-            onClick={handleAddToCard}
-          >
-            Thêm vào giỏ hàng
-          </button>
+          {product?.quantity > 0 ? (
+            <button
+              className="bg-green-600 w-full text-white py-2 rounded-sm hover:bg-green-700 transition duration-200 line-clamp-1"
+              onClick={handleAddToCard}
+            >
+              Thêm vào giỏ hàng
+            </button>
+          ) : (
+            <button
+              className="bg-red-600 w-full text-white py-2 rounded-sm transition duration-200 line-clamp-1"
+            >
+              Hết hàng
+            </button>
+          )
+        }
         </div>
       </div>
     </Link>

@@ -1,15 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FaSearch} from "react-icons/fa";
 import SummaryApi from '../common';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import formatPrice from '../helpers/formatMoney';
+import CountProduct from '../context/countProduct';
+import { toast } from 'react-toastify';
 
 
 const SearchProduct = () => {
 
+    const {setAllProducts} = useContext(CountProduct)
+
     const [searchValue, setSearchValue] = useState('');
     const [timeoutId, setTimeoutId] = useState(null);
-    const [searchResult, setSearchResult] = useState([])
+    // const [searchResult, setSearchResult] = useState([])
+    const navigate = useNavigate()
 
     const handleSearch = (e) => {
         setSearchValue(e.target.value)      
@@ -31,7 +36,12 @@ const SearchProduct = () => {
         const data = await response.json()
        
         if(data.success) {
-            setSearchResult(data.data)
+            // setSearchResult(data.data)
+            setAllProducts(data.data)
+        }
+
+        if(data.error){
+          toast.error(data.message)
         }
     }
 
@@ -49,15 +59,21 @@ const SearchProduct = () => {
                     clearTimeout(newTimeoutId);
                 }
             };
-        } else {
-            setSearchResult([]);
+        } 
+        else {
+            setAllProducts([]);
         }
     }, [searchValue]);
 
-    const handleProductClick = () => {
-        setSearchValue(''); 
-        setSearchResult([]);
-    };
+    const handleClickButtonSearch = () => {
+      fetchSearchProduct()
+      navigate("/product")
+    }
+
+    // const handleProductClick = () => {
+    //     setSearchValue(''); 
+    //     setSearchResult([]);
+    // };
 
   return (
     <div className="relative">
@@ -71,12 +87,15 @@ const SearchProduct = () => {
           onChange={handleSearch}
           placeholder="Tìm kiếm..."
         />
-        <div className="p-3 cursor-pointer text-xl" onClick={fetchSearchProduct}>
+       <button
+          className="p-3 cursor-pointer text-xl"
+          onClick={searchValue.trim() !== '' ? handleClickButtonSearch : undefined}
+        >
           <FaSearch />
-        </div>
+        </button>
       </div>
 
-      {searchResult.length > 0 && (
+      {/* {searchResult.length > 0 && (
         <div
           className={`${
             searchResult.length ? "block" : "hidden"
@@ -108,7 +127,7 @@ const SearchProduct = () => {
             })}
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

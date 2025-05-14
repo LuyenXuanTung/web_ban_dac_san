@@ -31,12 +31,20 @@ const SummaryApi = {
         url: `${backendDomain}/admin/update-role-user`,
         method: 'post'
     },
+    deleteUser: {
+        url: `${backendDomain}/delete-user`,
+        method: 'post'
+    },
     addProduct: {
         url: `${backendDomain}/add-product`,
         method: 'post'
     },
     allProduct: {
         url: `${backendDomain}/all-product`,
+        method: 'get'
+    },
+    allProductInAdmin: {
+        url: `${backendDomain}/all-product-admin`,
         method: 'get'
     },
     updateQuantityProduct: {
@@ -89,6 +97,10 @@ const SummaryApi = {
     },
     updateProduct: {
         url: `${backendDomain}/update-product`,
+        method: 'post'
+    },
+    deleteProduct: {
+        url: `${backendDomain}/delete-product`,
         method: 'post'
     },
     order: {

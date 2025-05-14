@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     password: String,
+    status: {type: Boolean, default: true},
     role: String,
     receiveName: { type: String, default: '' },
     receiveAddress: { type: String, default: '' },

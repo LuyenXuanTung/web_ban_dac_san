@@ -70,6 +70,9 @@ const UpdateOrder = ({ onclose, data, callFunc }) => {
     }
   };
 
+  console.log(productInOrder);
+  
+
   useEffect(() => {
     fetchProduct();
   }, []);
@@ -88,135 +91,137 @@ const UpdateOrder = ({ onclose, data, callFunc }) => {
           </button>
         </div>
 
-        {/* Order Information */}
-        <div className="mb-4">
-          <h2 className="text-xl font-semibold mb-2">Thông tin đơn hàng</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1">
-              <p>
-                <strong>Người đặt hàng:</strong> {data.user.name}
-              </p>
-              <p>
-                <strong>Tên người nhận:</strong> {data.user.receiveName}
-              </p>
-              <p>
-                <strong>Phương thức thanh toán:</strong> {data.payment_method}
-              </p>
-            </div>
-            <div className="flex flex-col gap-1">
-              <p>
-                <strong>Địa chỉ:</strong> {data.user.receiveAddress}
-              </p>
-              <p>
-                <strong>Số điện thoại:</strong> {data.user.receivePhone}
-              </p>
-              <p>
-                <strong>Ghi chú:</strong> {data.receiveNode || "Không có"}
-              </p>
+        <div className="max-h-[400px] overflow-y-scroll">
+          {/* Order Information */}
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold mb-2">Thông tin đơn hàng</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1">
+                <p>
+                  <strong>Người đặt hàng:</strong> {data.user.name}
+                </p>
+                <p>
+                  <strong>Tên người nhận:</strong> {data.user.receiveName}
+                </p>
+                <p>
+                  <strong>Phương thức thanh toán:</strong> {data.payment_method}
+                </p>
+              </div>
+              <div className="flex flex-col gap-1">
+                <p>
+                  <strong>Địa chỉ:</strong> {data.user.receiveAddress}
+                </p>
+                <p>
+                  <strong>Số điện thoại:</strong> {data.user.receivePhone}
+                </p>
+                <p>
+                  <strong>Ghi chú:</strong> {data.receiveNode || "Không có"}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="mb-4 flex gap-2 items-center">
-          <strong>Trạng thái đơn hàng: </strong>
-          <p>
-            {statusOrder.map(
-              (status) => status.value === selected && status.name
+          <div className="mb-4 flex gap-2 items-center">
+            <strong>Trạng thái đơn hàng: </strong>
+            <p>
+              {statusOrder.map(
+                (status) => status.value === selected && status.name
+              )}
+            </p>
+            {selected === "CANCEL" || selected === 'COMPLETED' ? (
+              <></>
+            ) : (
+              <select
+                className="bg-green-500 p-1 rounded-sm text-white"
+                onChange={handleSelected}
+              >
+                <option className="bg-white text-black">Lựa chọn</option>
+  
+                {selected === "WAITING" && (
+                  <>
+                    <option className="bg-white text-black" value="CONFIRMED">
+                      {statusOrder.map(
+                        (status) => status.value === "CONFIRMED" && status.name
+                      )}
+                    </option>
+                    <option className="bg-white text-black" value="CANCEL">
+                      {statusOrder.map(
+                        (status) => status.value === "CANCEL" && status.name
+                      )}
+                    </option>
+                  </>
+                )}
+                {selected === "CONFIRMED" && (
+                  <>
+                    <option className="bg-white text-black" value="SHIPPING">
+                      {statusOrder.map(
+                        (status) => status.value === "SHIPPING" && status.name
+                      )}
+                    </option>
+                  </>
+                )}
+                {selected === "SHIPPING" && (
+                  <>
+                    <option className="bg-white text-black" value="COMPLETED">
+                      {statusOrder.map(
+                        (status) => status.value === "COMPLETED" && status.name
+                      )}
+                    </option>
+                  </>
+                )}
+              </select>
             )}
-          </p>
-          {selected === "CANCEL" || selected === 'COMPLETED' ? (
-            <></>
-          ) : (
-            <select
-              className="bg-green-500 p-1 rounded-sm text-white"
-              onChange={handleSelected}
-            >
-              <option className="bg-white text-black">Lựa chọn</option>
-
-              {selected === "WAITING" && (
-                <>
-                  <option className="bg-white text-black" value="CONFIRMED">
-                    {statusOrder.map(
-                      (status) => status.value === "CONFIRMED" && status.name
-                    )}
-                  </option>
-                  <option className="bg-white text-black" value="CANCEL">
-                    {statusOrder.map(
-                      (status) => status.value === "CANCEL" && status.name
-                    )}
-                  </option>
-                </>
-              )}
-              {selected === "CONFIRMED" && (
-                <>
-                  <option className="bg-white text-black" value="SHIPPING">
-                    {statusOrder.map(
-                      (status) => status.value === "SHIPPING" && status.name
-                    )}
-                  </option>
-                </>
-              )}
-              {selected === "SHIPPING" && (
-                <>
-                  <option className="bg-white text-black" value="COMPLETED">
-                    {statusOrder.map(
-                      (status) => status.value === "COMPLETED" && status.name
-                    )}
-                  </option>
-                </>
-              )}
-            </select>
-          )}
-        </div>
-        {/* Product Table */}
-        <div className="mb-4">
-          <h2 className="text-xl font-semibold mb-2">Sản phẩm</h2>
-          <table className="w-full border-collapse border border-gray-300">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border border-gray-300 p-2">Hình ảnh</th>
-                <th className="border border-gray-300 p-2">Tên sản phẩm</th>
-                <th className="border border-gray-300 p-2">Giá</th>
-                <th className="border border-gray-300 p-2">Số lượng</th>
-                <th className="border border-gray-300 p-2">Thành tiền</th>
-              </tr>
-            </thead>
-            <tbody>
-              {productInOrder.map((product, index) => (
-                <tr key={index} className="hover:bg-gray-50">
-                  <td className="border border-gray-300 p-2 flex justify-center items-center">
-                    <img
-                      src={product.image[0]}
-                      alt={product.name}
-                      width={45}
-                      height={45}
-                    />
-                  </td>
-                  <td className="border border-gray-300 p-2 text-center">
-                    {product.name}
-                  </td>
-                  <td className="border border-gray-300 p-2 text-center">
-                    {formatPrice(product.price)}
-                  </td>
-                  <td className="border border-gray-300 p-2 text-center">
-                    {product.cartDetail.quantity}
-                  </td>
-                  <td className="border border-gray-300 p-2 text-center">
-                    {formatPrice(product.cartDetail.total_price)}
-                  </td>
+          </div>
+          {/* Product Table */}
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold mb-2">Sản phẩm</h2>
+            <table className="w-full border-collapse border border-gray-300">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border border-gray-300 p-2">Hình ảnh</th>
+                  <th className="border border-gray-300 p-2">Tên sản phẩm</th>
+                  <th className="border border-gray-300 p-2">Giá</th>
+                  <th className="border border-gray-300 p-2">Số lượng</th>
+                  <th className="border border-gray-300 p-2">Thành tiền</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Total Price */}
-        <div className="text-right">
-          <h2 className="text-lg font-semibol">
-            Tổng cộng:{" "}
-            <span className="text-red-600">
-              {formatPrice(data.total_price)}
-            </span>
-          </h2>
+              </thead>
+              <tbody>
+                {productInOrder.map((product, index) => (
+                  <tr key={index} className="hover:bg-gray-50">
+                    <td className="border border-gray-300 p-2 flex justify-center items-center">
+                      <img
+                        src={product.image[0]}
+                        alt={product.name}
+                        width={45}
+                        height={45}
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2 text-center">
+                      {product.name}
+                    </td>
+                    <td className="border border-gray-300 p-2 text-center">
+                      {formatPrice(product.price)}
+                    </td>
+                    <td className="border border-gray-300 p-2 text-center">
+                      {product.cartDetail.quantity}
+                    </td>
+                    <td className="border border-gray-300 p-2 text-center">
+                      {formatPrice(product.cartDetail.total_price)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+  
+          {/* Total Price */}
+          <div className="text-right pb-4">
+            <h2 className="text-lg font-semibol">
+              Tổng cộng:{" "}
+              <span className="text-red-600">
+                {formatPrice(data.total_price)}
+              </span>
+            </h2>
+          </div>
         </div>
       </div>
     </div>

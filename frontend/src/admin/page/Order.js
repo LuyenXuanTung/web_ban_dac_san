@@ -66,7 +66,13 @@ const Order = () => {
                         {moment(order?.createdAt).format("DD-MM-YYYY HH:mm")}
                     </td>
                     <td>{formatPrice(order?.total_price)}</td>
-                    <td>{statusOrder.map(status => status.value === order?.status && status.name)}</td>
+                    {
+                      statusOrder.map(status => status.value === order?.status && 
+                        <td className='flex items-center justify-center'><div className={`${status.bg} min-w-28 p-1 rounded-sm`}>{status.name}</div> </td>
+                    )
+                    }
+                      
+                    
                     <td>
                       <button
                         className="bg-green-100 hover:bg-green-500 hover:text-white rounded-full p-2 cursor-pointer"

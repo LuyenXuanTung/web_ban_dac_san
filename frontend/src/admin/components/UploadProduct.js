@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import province from '../../data/province';
 import uploadImage from '../../helpers/uploadImages';
 import moment from 'moment';
-import fetchAllProduct from '../../helpers/fetchAllProduct';
+import fetchAllProduct, { fetchAllProductInAdmin } from '../../helpers/fetchAllProduct';
 
 
 
@@ -18,6 +18,7 @@ const UploadProduct = ({onClose,fetchData,title,dataUpdate,handleFetchProduct}) 
         category: "",
         image: [],
         price: "",
+        manufacture:'',
         expiry: "",
         province: "",
     })
@@ -97,7 +98,7 @@ const UploadProduct = ({onClose,fetchData,title,dataUpdate,handleFetchProduct}) 
 
       if (dataResponse.success) {
         toast.success(dataResponse.message);
-        fetchAllProduct(fetchData);
+        fetchAllProductInAdmin(fetchData);
         onClose();
       }
 
@@ -222,6 +223,19 @@ const UploadProduct = ({onClose,fetchData,title,dataUpdate,handleFetchProduct}) 
               <p className="text-red-600 text-sm">Vui lòng tải lên hình ảnh</p>
             )}
           </div>
+
+          <label htmlFor="manufacture" className="mt-3">
+            Ngày sản xuất:
+          </label>
+          <input
+            type="date"
+            id="manufacture"
+            name="manufacture"
+            value={moment(data.manufacture).format('YYYY-MM-DD')}
+            onChange={handleOnchange}
+            className="p-2 bg-slate-100 border rounded"
+           
+          />
 
 
           <label htmlFor="expiry" className="mt-3">

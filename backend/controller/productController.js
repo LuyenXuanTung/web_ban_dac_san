@@ -30,6 +30,28 @@ async function addProduct(req, res) {
 
 async function getAllProduct(req, res) {
   try {
+    const allProduct = await product.find({status: true})
+
+    res.json({
+      message: "Tất cả sản phẩm",
+      data: allProduct,
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    res.json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
+async function getAllProductInAdmin(req, res) {
+  try {
+    if (!checkRoleAdmin(req.userId)) {
+      throw new Error("Bạn không có quyền truy cập");
+    }
     const allProduct = await product.find()
 
     res.json({
@@ -272,25 +294,15 @@ async function searchProduct(req, res) {
     const { searchValue } = req.body;
     
     const searchProduct = await product.find({name: {$regex: searchValue, $options: 'i'}});
-    if (!searchProduct) {
-      return res.json({
-        message: "Không tìm thấy sản phẩm",
-        error: true,
-        success: false,
-      });
+
+    if (searchProduct.length === 0) {
+      throw new Error("Không tìm thấy sản phẩm")
     }
     
-    const result = searchProduct.map((item) => {
-      return {
-        id: item._id,
-        image: item.image[0],
-        name: item.name,
-        new_price: item.new_price,
-      };
-    })
+    
     res.json({
       message: "Danh sách sản phẩm tìm kiếm",
-      data: result,
+      data: searchProduct,
       success: true,
       error: false,
     });
@@ -323,6 +335,7 @@ async function updateProduct(req, res) {
     data.promotion && (productUpdate.promotion = data.promotion);
     data.category && (productUpdate.category = data.category);
     data.province && (productUpdate.province = data.province);
+    data.manufacture && (productUpdate.manufacture = data.manufacture);
     data.expiry && (productUpdate.expiry = data.expiry);
     data.quantity && (productUpdate.quantity = data.quantity);
     data.description && (productUpdate.description = data.description);
@@ -342,9 +355,42 @@ async function updateProduct(req, res) {
   }
 }
 
+async function deleteProduct(req, res) {
+  try {
+    if (!checkRoleAdmin(req.userId)) {
+      throw new Error("Bạn không có quyền truy cập");
+    }
+
+    const {deleteProductId, status} = req.body;
+    
+    const productUpdate = await product.findByIdAndUpdate(deleteProductId,{status});
+    
+    if (!productUpdate) {
+      throw new Error("Sản phẩm không tồn tại");
+    }
+    
+    let message=''
+    status ? message = 'Khôi phục sản phẩm thành công' : message="Xóa sản phẩm thành công"
+ 
+
+    res.json({
+      message,
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    res.json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
 module.exports = {
   addProduct,
   getAllProduct,
+  getAllProductInAdmin,
   updateQuantityProduct,
   getProductsBestSelling,
   getProductsById,
@@ -353,4 +399,5 @@ module.exports = {
   getProductsBySelected,
   searchProduct,
   updateProduct,
+  deleteProduct
 };

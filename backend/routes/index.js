@@ -6,6 +6,7 @@ const {
   logout,
   getAllUser,
   updateRoleUser,
+  deleteUser,
 } = require("../controller/userController");
 const authToken = require("../middleware/authToken");
 const { getAdmin } = require("../controller/adminController");
@@ -20,6 +21,8 @@ const {
   searchProduct,
   updateProduct,
   getProductsByManyId,
+  deleteProduct,
+  getAllProductInAdmin,
 } = require("../controller/productController");
 const { addToCart, countProductInCart, getCart, updateQuantity, removeProductCart } = require("../controller/cartController");
 const { addOrder, getOrder, setStatusOrder } = require("../controller/orderController");
@@ -31,6 +34,8 @@ router.post("/sign-up", signUp);
 router.post("/login", login);
 router.get("/user-details", authToken, userDetails);
 router.get("/logout", logout);
+router.post("/delete-user", authToken, deleteUser);
+
 
 //admin
 router.get("/admin", authToken, getAdmin);
@@ -41,6 +46,7 @@ router.post("/admin/update-role-user", authToken, updateRoleUser);
 router.post("/add-product", authToken, addProduct);
 router.post("/update-quantity-product", authToken, updateQuantityProduct);
 router.get("/all-product", getAllProduct);
+router.get("/all-product-admin",authToken, getAllProductInAdmin);
 router.get("/all-product-best-selling", getProductsBestSelling);
 router.post("/product-details/:id", getProductsById);
 router.post("/products-many-id", getProductsByManyId);
@@ -48,6 +54,7 @@ router.post("/setPromotion", authToken, setPromotion);
 router.post("/getProductSelected", getProductsBySelected);
 router.post("/search-product", searchProduct);
 router.post("/update-product", authToken, updateProduct);
+router.post("/delete-product", authToken, deleteProduct);
 
 
 //cart

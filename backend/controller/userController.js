@@ -60,6 +60,10 @@ async function login(req, res) {
             throw new Error("email không tồn tại")
         }
 
+        if(userCurrent.status === false){
+          throw new Error("tài khoản đã bị khóa")
+        }
+
         const checkPassword = await bcrypt.compare(password, userCurrent.password)
 
         if(checkPassword){
@@ -187,11 +191,41 @@ async function updateRoleUser(req, res) {
   }
 }
 
+async function deleteUser(req, res) {
+  try {
+    if(!checkRoleAdmin(req.userId)){
+      throw new Error("Bạn không quyền truy cập")
+    }
+
+    const { deleteUserId,status } = req.body
+    console.log(deleteUserId,status);
+    let message=''
+    status ? message = 'Khôi phục người dùng thành công' : message="Xóa người dùng thành công"
+  
+    const updateUser = await user.findByIdAndUpdate(deleteUserId,{status})
+    
+    res.json({
+      data: updateUser,
+      message,
+      success: true,
+      error: false
+    })
+
+  } catch (error) {
+    res.json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
 module.exports = {
     signUp,
     login,
     userDetails,
     logout,
     getAllUser,
-    updateRoleUser
+    updateRoleUser,
+    deleteUser
 }
