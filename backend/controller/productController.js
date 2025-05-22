@@ -1,5 +1,7 @@
 const checkRoleAdmin = require("../middleware/checkRoleAdmin");
+const order = require("../model/order");
 const product = require("../model/product");
+const ratingModel = require("../model/rating")
 
 async function addProduct(req, res) {
   try {
@@ -387,6 +389,46 @@ async function deleteProduct(req, res) {
   }
 }
 
+async function feedback(req, res) {
+  try {
+    
+    const { orderCurrentId, productId, rating, comment } = req.body;
+    const payload = {
+      star: rating,
+      content: comment,
+      productId,
+      userId: req.userId
+    }
+
+    
+    const newRating = new ratingModel(payload)
+    await newRating.save()
+
+    const myOrder = await order.findById(orderCurrentId)
+    myOrder.cart_details.forEach(c => {
+      if (c.productId.toString() === productId.toString()) {
+      c.isRating = true;
+      }
+    })
+    myOrder.markModified('cart_details');
+    await myOrder.save();
+    
+    
+
+    res.json({
+      message:"Đánh giá thành công",
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    res.json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
 module.exports = {
   addProduct,
   getAllProduct,
@@ -399,5 +441,6 @@ module.exports = {
   getProductsBySelected,
   searchProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  feedback,
 };

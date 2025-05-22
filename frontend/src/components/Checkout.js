@@ -12,7 +12,6 @@ import fetchCartItems from '../helpers/fetchCartItems';
 const Checkout = ({calculateTotal, onClose}) => {
   const [shippingFee, setShippingFee] = useState(30000); 
   const [paymentMethod, setPaymentMethod] = useState('');
-  const [showQRCode, setShowQRCode] = useState(false);
   const totalPrice = calculateTotal(); 
   const user = useSelector((state) => state?.user?.user)
   const { cartItems,setCartItems,fetchCountProductInCart } = useContext(CountProduct)
@@ -54,11 +53,6 @@ const Checkout = ({calculateTotal, onClose}) => {
     const method = e.target.value;
     setPaymentMethod(method);
 
-    if (method === 'online') {
-      setShowQRCode(true);
-    } else {
-      setShowQRCode(false);
-    }
   };
 
   
@@ -82,7 +76,12 @@ const Checkout = ({calculateTotal, onClose}) => {
     const res = await fetchApi.json()
     
     if(res.success){
-      toast.success(res.message)
+      if(res.data){
+        window.location.href = res.data;
+      }
+      
+      else{
+        toast.success(res.message)
       navigate('/')
       dispatch(setUserDetails({
         ...user,
@@ -92,6 +91,7 @@ const Checkout = ({calculateTotal, onClose}) => {
       }));
       fetchCountProductInCart()
       fetchCartItems(setCartItems)
+      }
     }
 
 
@@ -228,24 +228,6 @@ const Checkout = ({calculateTotal, onClose}) => {
         </div>
 
         {/* QR Code for Online Payment */}
-        {showQRCode && (
-          <div className="mt-4 text-center">
-            <h4 className="text-lg font-bold mb-2">Quét mã QR để thanh toán</h4>
-            <div
-              style={{
-                backgroundImage: `url(${qrCode})`,
-                width: "300px",
-                height: "300px",
-                backgroundSize: "cover",
-                margin: "0 auto",
-              }}
-            ></div>
-
-            <p className="mt-2 text-gray-500">
-              Số tiền: {formatPrice(calculateTotalWithShipping())}
-            </p>
-          </div>
-        )}
 
         <div className='flex items-center gap-10'>
           <button className="w-full border border-red-600 text-red-600 py-2 rounded mt-4 hover:bg-red-700 hover:text-white transition duration-200"

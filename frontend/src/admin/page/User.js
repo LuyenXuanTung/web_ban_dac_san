@@ -52,7 +52,7 @@ const User = () => {
             <th>Tên</th>
             <th>Email</th>
             <th>Quyền</th>
-            <th>Ngày tạo</th>
+            <th>Trạng thái</th>
             <th>Hành động</th>
           </tr>
         </thead>
@@ -65,7 +65,8 @@ const User = () => {
                 <td>{user?.name}</td>
                 <td>{user?.email}</td>
                 <td>{user?.role}</td>
-                <td>{moment(user?.createdAt).format("DD-MM-YYYY HH:mm")}</td>
+                {/* <td>{moment(user?.createdAt).format("DD-MM-YYYY HH:mm")}</td> */}
+                <td>{user?.status ? "Đang hiệu lực" : "Vô hiệu hóa"}</td>
                 <td className='flex gap-1 items-center justify-center'>
                   <button
                     className="bg-green-100 hover:bg-green-500 hover:text-white rounded-full p-2 cursor-pointer"

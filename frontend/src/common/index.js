@@ -115,6 +115,14 @@ const SummaryApi = {
         url: `${backendDomain}/status-order`,
         method: 'post'
     },
+    feedBack: {
+        url: `${backendDomain}/feedback`,
+        method: 'post'
+    },
+    getFeedBacks: {
+        url: `${backendDomain}/get-feedbacks`,
+        method: 'post'
+    },
 }
 
 export default SummaryApi

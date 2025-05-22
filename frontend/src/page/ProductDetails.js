@@ -6,11 +6,14 @@ import addToCart from '../helpers/addToCart';
 import CountProduct from '../context/countProduct';
 import fetchCartItems from '../helpers/fetchCartItems';
 import moment from 'moment';
+import Feedback from '../components/Feedback';
+import { useNavigate } from 'react-router-dom';
 
 
 const ProductDetails = () => {
 
   const [data, setData] = useState({
+    _id:'',
     name: '',
     description: '',
     category: '',
@@ -27,6 +30,7 @@ const ProductDetails = () => {
   const productImagesLoading = new Array(4).fill(null) 
   const [activeImage, setActiveImage] = useState('')
   const context = useContext(CountProduct)
+  const navigate = useNavigate()
 
   const handleActiveImage = (image) =>{
     setActiveImage(image)
@@ -193,7 +197,12 @@ const ProductDetails = () => {
             {
               data?.quantity > 0 && (
                 <div className="flex items-center gap-3 my-2">
-              <button className="border-2 border-green-600 rounded px-4 py-2 min-w-[120px] text-green-600 font-medium hover:bg-green-600 hover:text-white">
+              <button className="border-2 border-green-600 rounded px-4 py-2 min-w-[120px] text-green-600 font-medium hover:bg-green-600 hover:text-white"
+              onClick={e => {
+                handleAddToCard(e,data?._id)
+                navigate('/cart')
+              }}
+              >
                 Mua ngay
               </button>
               <button className="border-2 border-green-600 rounded px-4 py-2 min-w-[120px] bg-green-600 text-white hover:bg-white hover:text-green-600" 
@@ -215,7 +224,7 @@ const ProductDetails = () => {
 
 
       {/* create component feedback product */}
-      
+      <Feedback productId={data._id} />
     </div>
   )
 }

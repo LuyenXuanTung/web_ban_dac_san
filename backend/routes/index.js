@@ -23,9 +23,11 @@ const {
   getProductsByManyId,
   deleteProduct,
   getAllProductInAdmin,
+  feedback,
 } = require("../controller/productController");
 const { addToCart, countProductInCart, getCart, updateQuantity, removeProductCart } = require("../controller/cartController");
 const { addOrder, getOrder, setStatusOrder } = require("../controller/orderController");
+const { getFeedbackByProductId } = require("../controller/feedbackController");
 
 const router = express.Router();
 
@@ -55,6 +57,8 @@ router.post("/getProductSelected", getProductsBySelected);
 router.post("/search-product", searchProduct);
 router.post("/update-product", authToken, updateProduct);
 router.post("/delete-product", authToken, deleteProduct);
+router.post("/feedback",authToken, feedback);
+
 
 
 //cart
@@ -69,6 +73,10 @@ router.post("/remove-product-cart", authToken, removeProductCart);
 router.post("/order", authToken, addOrder);
 router.get("/all-order", authToken, getOrder);
 router.post("/status-order", authToken, setStatusOrder);
+
+
+//feedback
+router.post("/get-feedbacks", getFeedbackByProductId);
 
 
 

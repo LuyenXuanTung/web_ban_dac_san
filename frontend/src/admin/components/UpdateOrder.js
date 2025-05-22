@@ -199,7 +199,7 @@ const UpdateOrder = ({ onclose, data, callFunc }) => {
                       {product.name}
                     </td>
                     <td className="border border-gray-300 p-2 text-center">
-                      {formatPrice(product.price)}
+                      {formatPrice(product.new_price)}
                     </td>
                     <td className="border border-gray-300 p-2 text-center">
                       {product.cartDetail.quantity}

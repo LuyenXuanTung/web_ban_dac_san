@@ -2,10 +2,34 @@ import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { toast } from "react-toastify";
+import SummaryApi from "../common";
+import { useNavigate} from 'react-router-dom'
 
-const FeedbackForm = ({onclose,orderId}) => {
+const FeedbackForm = ({onclose,orderId,fetchProduct}) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const navigate = useNavigate()
+
+  const fetchFeedback = async() => {
+    const dataApi = await fetch(SummaryApi.feedBack.url,{
+      method:SummaryApi.feedBack.method,
+      credentials: 'include',
+      headers:{
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        productId: orderId.productId,
+        orderCurrentId: orderId.orderId,
+        rating,
+        comment
+      })
+    })
+
+    const res = await dataApi.json()
+    if(res.success){
+      toast.success(res.message)
+    }
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -13,8 +37,8 @@ const FeedbackForm = ({onclose,orderId}) => {
       toast.error("Vui lòng đánh giá")
       return;
     }
-    
-    
+    fetchFeedback()
+    onclose()
   };
 
   return (
@@ -24,7 +48,7 @@ const FeedbackForm = ({onclose,orderId}) => {
             <h2 className="font-semibold text-2xl">Đánh giá</h2>
             <button className="ml-auto block text-lg rounded-full p-1 hover:bg-red-700 hover:text-white" onClick={onclose}><IoMdClose/></button>  
         </div>
-        <div className="font-bold mb-2">Mã đơn hàng: <span className="font-normal">{orderId}</span></div>
+        <div className="font-bold mb-2">Tên sản phẩm: <span className="font-normal">{orderId.name} </span></div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
             {[...Array(5)].map((_, i) => (

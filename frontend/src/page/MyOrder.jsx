@@ -14,7 +14,11 @@ const MyOrder = () => {
     {name: "Thanh toán trực tuyến", value: 'online'},
   ]
   const [openFeedback, setOpenFeedback] = useState(false)
-  const [orderId, setOrderId] = useState('')
+  const [orderId, setOrderId] = useState({
+    orderId:'',
+    productId: '',
+    name: ''
+  })
   
 
   const fetchOrders = async () => {
@@ -93,8 +97,15 @@ const MyOrder = () => {
     
   };
 
-  const handleComment = (id) => {
-    setOrderId(id)
+  console.log(orders);
+  
+
+  const handleComment = (orderId,productId,name) => {
+    setOrderId({
+      orderId,
+      productId,
+      name
+    })
   }
 
 
@@ -117,46 +128,66 @@ const MyOrder = () => {
                       <h2 className="text-lg font-bold mb-2">Sản phẩm</h2>
                       <ul className="space-y-2">
                         {order.cart_details.map((product, index) => (
-                          <li key={index} className="flex items-center gap-4">
-                            <img
-                              src={product.product.image[0]}
-                              alt={product.product.name}
-                              className="w-12 h-12 object-cover rounded"
-                            />
-                            <div>
-                              <p className="font-medium">{product.product.name}</p>
-                              <p className="text-sm text-gray-500">
-                                Số lượng: {product.quantity}
-                              </p>
+                          <li
+                            key={index}
+                            className="flex items-center justify-between gap-4 border-b-2"
+                          >
+                            <div className="flex gap-4 items-center">
+                              <img
+                                src={product.product.image[0]}
+                                alt={product.product.name}
+                                className="w-12 h-12 object-cover rounded"
+                              />
+                              <div>
+                                <p className="font-medium">
+                                  {product.product.name}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  Số lượng: {product.quantity}
+                                </p>
+                              </div>
                             </div>
+                            {order.status === "COMPLETED" &&
+                              !product.isRating && (
+                                <button
+                                  className="py-1 px-3 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+                                  onClick={() => {
+                                    handleComment(
+                                      order._id,
+                                      product.product._id,
+                                      product.product.name
+                                    );
+                                    setOpenFeedback(true);
+                                  }}
+                                >
+                                  Đánh giá
+                                </button>
+                              )}
+                            {order.status === "COMPLETED" &&
+                              product.isRating && (
+                                <p className="py-1 px-3 bg-green-500 text-white rounded-md">
+                                  Đã đánh giá
+                                </p>
+                              )}
                           </li>
                         ))}
                       </ul>
                     </div>
-    
+
                     {/* Right Half: Order Information */}
                     <div className="w-1/2 p-4 bg-gray-100 rounded-r-lg">
                       <div className="flex items-center justify-between">
-                        <h2 className="text-lg font-bold mb-2">Thông tin đơn hàng</h2>
-                        {
-                            order.status === 'WAITING' && (
-                              <button className="py-1 px-3 bg-red-600 text-white rounded-md hover:bg-red-700"
-                              onClick={() => handleSelected("CANCEL",order._id)}
-                              >Hủy</button>
-                            )
-                          }
-                          {
-                            order.status === 'COMPLETED' && (
-                              <button className="py-1 px-3 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
-                              onClick={() => 
-                                {
-                                  handleComment(order._id)
-                                  setOpenFeedback(true)                           
-                                }                              
-                              }
-                              >Đánh giá</button>
-                            )
-                          }
+                        <h2 className="text-lg font-bold mb-2">
+                          Thông tin đơn hàng
+                        </h2>
+                        {order.status === "WAITING" && (
+                          <button
+                            className="py-1 px-3 bg-red-600 text-white rounded-md hover:bg-red-700"
+                            onClick={() => handleSelected("CANCEL", order._id)}
+                          >
+                            Hủy
+                          </button>
+                        )}
                       </div>
                       <p>
                         <strong>Mã đơn hàng:</strong> {order._id}
@@ -166,10 +197,17 @@ const MyOrder = () => {
                         {moment(order?.createdAt).format("DD-MM-YYYY HH:mm")}
                       </p>
                       <p className="flex gap-2 items-center">
-                        <strong>Trạng thái:</strong> {statusOrder.map(status => status.value === order.status && status.name)}
+                        <strong>Trạng thái:</strong>{" "}
+                        {statusOrder.map(
+                          (status) =>
+                            status.value === order.status && status.name
+                        )}
                       </p>
                       <p>
-                        <strong>Phương thức thanh toán:</strong> {payment_method.map(p => order.payment_method === p.value && p.name)  }
+                        <strong>Phương thức thanh toán:</strong>{" "}
+                        {payment_method.map(
+                          (p) => order.payment_method === p.value && p.name
+                        )}
                       </p>
                       <p className="mt-4 text-lg font-bold text-red-600">
                         Tổng cộng: {formatPrice(order.total_price)}
@@ -188,14 +226,13 @@ const MyOrder = () => {
           )}
         </div>
       </div>
-      {
-          openFeedback && (
-            <FeedbackForm 
-            onclose={() => setOpenFeedback(false)} 
-            orderId={orderId}
-            />
-          )
-        }
+      {openFeedback && (
+        <FeedbackForm
+          onclose={() => setOpenFeedback(false)}
+          orderId={orderId}
+          fetchProduct={fetchProduct}
+        />
+      )}
     </>
   );
 };

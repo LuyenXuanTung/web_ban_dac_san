@@ -16,7 +16,7 @@ const SideBar = ({show}) => {
 
   return (
     <div className={`fixed top-0 left-0 ${show ? 'w-64' : 'w-16'} max-w-[260px] bg-white z-10 transition-all`}>
-        <div className={`w-full h-16 flex shadow-lg items-center justify-center`}>
+        <div className={`w-full h-16 flex shadow-lg items-center justify-center `}>
             <Link to={"/admin"}>
               <img src={show ? logo : icon} alt="logo"className='h-12 w-full transition-[opacity_0.3s_ease-in-out] object-content'/>
             </Link>
