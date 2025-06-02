@@ -15,6 +15,7 @@ import ProductClient from "../page/Product";
 import Cart from "../page/Cart";
 import Order from "../admin/page/Order";
 import MyOrder from "../page/MyOrder";
+import PaymentResult from "../page/PaymentResult";
 
 
 const router = createBrowserRouter([
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
           {
             path: "/my-order",
             element: <MyOrder />,
+          },
+          {
+            path: "/payment-result",
+            element: <PaymentResult />,
           },
         ]
       },

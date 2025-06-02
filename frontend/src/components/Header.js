@@ -9,6 +9,7 @@ import { setUserDetails } from "../store/userSlice";
 import { toast } from 'react-toastify';
 import SearchProduct from './SearchProduct';
 import Cart from './Cart';
+import { useEffect } from 'react';
 
 
 
@@ -35,24 +36,37 @@ const Header = () => {
     }
   }
 
-
+  
 
   return (
     <>
-      <header className="h-20 bg-white fixed w-full z-50">
+      <header className="h-20 bg-white fixed w-full z-50 shadow-lg border-b-[1px] border-gray-200">
         <div className="h-full container mx-auto p-4 flex justify-between items-center">
-          <div>
+          <div className=''>
             <Link to={"/"}>
               <img src={logo} alt="logo" w={90} h={50} />
             </Link>
           </div>
 
+          <div className='hidden lg:flex items-center gap-10 text-black pr-4'>
+            <Link
+              to={"/"}
+              className="hover:text-green-600 text-lg cursor-pointer font-semibold"
+            >
+              Trang chủ
+            </Link>
+            <Link
+              to={"/product"}
+              className="hover:text-green-600 text-lg cursor-pointer font-semibold"
+            >
+              Sản phẩm
+            </Link>
+          </div>
+
           <SearchProduct />
 
-          <div className="flex min-w-[220px] justify-end text-sm text-white items-center">
-            {user?._id && (
-              <Cart />
-            )}
+          <div className="flex min-w-[160px] justify-end text-sm text-white items-center">
+            {user?._id && <Cart />}
 
             <div className='className="p-3 rounded-full bg-green-600 cursor-pointer hover:bg-green-700'>
               {user?._id ? (
@@ -67,7 +81,10 @@ const Header = () => {
                     <div className="px-4 py-2 text-black w-full text-center hover:bg-slate-200">
                       Tài khoản
                     </div>
-                    <Link to={'/my-order'} className="block py-2 text-black w-full text-center hover:bg-slate-200">
+                    <Link
+                      to={"/my-order"}
+                      className="block py-2 text-black w-full text-center hover:bg-slate-200"
+                    >
                       Đơn hàng của bạn
                     </Link>
                     <button
@@ -87,7 +104,7 @@ const Header = () => {
             </div>
           </div>
         </div>
-        <div className="bg-slate-100 md:h-fit w-full shadow-md">
+        {/* <div className="bg-slate-100 md:h-fit w-full shadow-md">
           <div className="container mx-auto px-4 flex justify-between items-center h-full">
             <div className="category max-w-[250px] bg-green-600 text-white p-2 relative">
               <h3 className="flex items-center cursor-default">
@@ -109,21 +126,9 @@ const Header = () => {
                   );
                 })}
               </div>
-            </div>
+            </div> *
 
-            <div className="flex gap-12 text-black">
-              <Link
-                to={"/"}
-                className="hover:text-green-600 cursor-pointer font-semibold"
-              >
-                Trang chủ
-              </Link>
-              <Link
-                to={"/product"}
-                className="hover:text-green-600 cursor-pointer font-semibold"
-              >
-                Sản phẩm
-              </Link>
+             <div className="flex gap-12 text-black">
               <div className="hover:text-green-600 cursor-pointer font-semibold">
                 Giới thiệu
               </div>
@@ -132,7 +137,7 @@ const Header = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </header>
     </>
   );

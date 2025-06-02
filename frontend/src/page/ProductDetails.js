@@ -39,6 +39,7 @@ const ProductDetails = () => {
 
   const fetchProductDetails = async () => {
     setLoading(true)
+    const productDetailsId = localStorage.getItem('productDetailsId')
     const res = await fetch(SummaryApi.getProductsById.url, {
       method: SummaryApi.getProductsById.method,
       credentials: 'include',
@@ -46,7 +47,7 @@ const ProductDetails = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        productId: context?.productDetailsId,
+        productId: productDetailsId ? productDetailsId : context?.productDetailsId,
       }),
     })
     const data = await res.json()
@@ -56,12 +57,17 @@ const ProductDetails = () => {
     if (data.success) {
       setData(data.data)
       setActiveImage(data.data.image[0])
+      localStorage.setItem('productDetailsId', data.data._id)
     } 
   }
   
   useEffect(() => {
     fetchProductDetails()
     setLoading(false)
+
+    return () => {
+      localStorage.removeItem('productDetailsId')
+    }
   },[context?.productDetailsId])
   
   const handleAddToCard = async(e, id) => {
@@ -120,17 +126,11 @@ const ProductDetails = () => {
         {/* Product Details */}
         {loading ? (
           <div className="flex flex-col gap-1">
-            <p className="bg-slate-200 animate-pulse rounded h-6 w-full inline-block">
-      
-            </p>
-            <h2 className="bg-slate-200 animate-pulse rounded h-6 w-full">
-              
-            </h2>
+            <p className="bg-slate-200 animate-pulse rounded h-6 w-full inline-block"></p>
+            <h2 className="bg-slate-200 animate-pulse rounded h-6 w-full"></h2>
             <p className="bg-slate-200 animate-pulse rounded h-6 min-w-[100px] max-w-[120px]"></p>
 
-            <div className="bg-slate-200 animate-pulse rounded h-6 min-w-[100px] max-w-[100px]">
-              
-            </div>
+            <div className="bg-slate-200 animate-pulse rounded h-6 min-w-[100px] max-w-[100px]"></div>
 
             <div className="flex items-center gap-2 text-2xl lg:text-3xl font-medium my-1">
               <p className="bg-slate-200 animate-pulse rounded h-6 min-w-[100px] max-w-[120px]"></p>
@@ -138,35 +138,55 @@ const ProductDetails = () => {
             </div>
 
             <div className="flex items-center gap-3 my-2">
-              <button className="bg-slate-200 animate-pulse rounded h-8 min-w-[130px] max-w-[180px]">
-                
-              </button>
-              <button className="bg-slate-200 animate-pulse rounded h-8 min-w-[130px] max-w-[180px]">
-                
-              </button>
+              <button className="bg-slate-200 animate-pulse rounded h-8 min-w-[130px] max-w-[180px]"></button>
+              <button className="bg-slate-200 animate-pulse rounded h-8 min-w-[130px] max-w-[180px]"></button>
             </div>
 
             <div>
-              <p className="bg-slate-200 animate-pulse rounded h-6 min-w-[100px] max-w-[120px]"> </p>
-              <p className='bg-slate-200 animate-pulse rounded h-10 min-w-[100px] max-w-[120px] mt-2'></p>
+              <p className="bg-slate-200 animate-pulse rounded h-6 min-w-[100px] max-w-[120px]">
+                {" "}
+              </p>
+              <p className="bg-slate-200 animate-pulse rounded h-10 min-w-[100px] max-w-[120px] mt-2"></p>
             </div>
           </div>
         ) : (
           <div className="flex flex-col gap-1">
-            <h2 className="text-2xl lg:text-4xl font-medium">
-              {data?.name}
-            </h2>
+            <h2 className="text-2xl lg:text-4xl font-medium">{data?.name}</h2>
             <p className="capitalize text-slate-400">{data?.category}</p>
 
-            <div className="text-yellow-500 flex items-center gap-1">
-              <FaStar />
-              <FaStar />
-              <FaStar />
-              <FaStar />
-              <FaStarHalf />
-              <p className="text-slate-400 text-sm">({data?.total_rating ? data.total_rating+' đánh giá' : "Chưa có đánh giá"})</p>
-              <p className="text-black text-base font-medium ml-1">{data?.total_pay && data.total_pay + " đã bán"}</p>
-
+            <div className="flex items-center gap-1">
+              {(() => {
+                const avg =
+                  data?.total_rating > 0
+                    ? data.total_stars / data.total_rating
+                    : 5;
+                const full = Math.floor(avg);
+                const half = avg - full >= 0.5;
+                const empty = 5 - full - (half ? 1 : 0);
+                return (
+                  <>
+                    {[...Array(full)].map((_, i) => (
+                      <FaStar key={"full-" + i} className="text-yellow-500" />
+                    ))}
+                    {half && (
+                      <FaStarHalf key="half" className="text-yellow-500" />
+                    )}
+                    {[...Array(empty)].map((_, i) => (
+                      <FaStar key={"empty-" + i} className="text-gray-300" />
+                    ))}
+                  </>
+                );
+              })()}
+              <p className="text-slate-400 text-sm">
+                (
+                {data?.total_rating
+                  ? data.total_rating + " đánh giá"
+                  : "Chưa có đánh giá"}
+                )
+              </p>
+              <p className="text-black text-base font-medium ml-1">
+                {data?.total_pay && data.total_pay + " đã bán"}
+              </p>
             </div>
 
             <div className="flex items-center gap-2 text-base lg:text-lg font-medium my-1">
@@ -174,11 +194,15 @@ const ProductDetails = () => {
             </div>
 
             <div className="flex items-center gap-2 text-base lg:text-lg font-medium my-1">
-              <p className="text-slate-600">Ngày sản xuất: {moment(data?.manufacture).format("DD-MM-YYYY")}</p>
+              <p className="text-slate-600">
+                Ngày sản xuất: {moment(data?.manufacture).format("DD-MM-YYYY")}
+              </p>
             </div>
 
             <div className="flex items-center gap-2 text-base lg:text-lg font-medium my-1">
-              <p className="text-slate-600">Ngày hết hạn: {moment(data?.expiry).format("DD-MM-YYYY")}</p>
+              <p className="text-slate-600">
+                Ngày hết hạn: {moment(data?.expiry).format("DD-MM-YYYY")}
+              </p>
             </div>
 
             <div className="flex items-center gap-2 text-base lg:text-lg font-medium my-1">
@@ -186,33 +210,39 @@ const ProductDetails = () => {
             </div>
 
             <div className="flex items-center gap-2 text-base font-medium my-1">
-              <p className="text-red-500 bg-red-50 p-1">Khuyến mãi: Giảm {data?.promotion}%</p>
+              <p className="text-red-500 bg-red-50 p-1">
+                Khuyến mãi: Giảm {data?.promotion}%
+              </p>
             </div>
 
             <div className="flex items-center gap-4 text-2xl lg:text-3xl font-medium my-1">
-              <p className="text-2xl font-semibold text-slate-500 line-through">{formatPrice(data?.price)}</p>
-              <p className="text-3xl font-semibold text-red-600">{formatPrice(data?.new_price)}</p>
+              <p className="text-2xl font-semibold text-slate-500 line-through">
+                {formatPrice(data?.price)}
+              </p>
+              <p className="text-3xl font-semibold text-red-600">
+                {formatPrice(data?.new_price)}
+              </p>
             </div>
 
-            {
-              data?.quantity > 0 && (
-                <div className="flex items-center gap-3 my-2">
-              <button className="border-2 border-green-600 rounded px-4 py-2 min-w-[120px] text-green-600 font-medium hover:bg-green-600 hover:text-white"
-              onClick={e => {
-                handleAddToCard(e,data?._id)
-                navigate('/cart')
-              }}
-              >
-                Mua ngay
-              </button>
-              <button className="border-2 border-green-600 rounded px-4 py-2 min-w-[120px] bg-green-600 text-white hover:bg-white hover:text-green-600" 
-              onClick={e => handleAddToCard(e,data?._id)}
-              >
-                Thêm vào giỏ hàng
-              </button>
-            </div>
-              )
-            }
+            {data?.quantity > 0 && (
+              <div className="flex items-center gap-3 my-2">
+                <button
+                  className="border-2 border-green-600 rounded px-4 py-2 min-w-[120px] text-green-600 font-medium hover:bg-green-600 hover:text-white"
+                  onClick={(e) => {
+                    handleAddToCard(e, data?._id);
+                    navigate("/cart");
+                  }}
+                >
+                  Mua ngay
+                </button>
+                <button
+                  className="border-2 border-green-600 rounded px-4 py-2 min-w-[120px] bg-green-600 text-white hover:bg-white hover:text-green-600"
+                  onClick={(e) => handleAddToCard(e, data?._id)}
+                >
+                  Thêm vào giỏ hàng
+                </button>
+              </div>
+            )}
 
             <div>
               <p className="text-slate-600 font-medium my-1">Mô tả: </p>
@@ -222,11 +252,10 @@ const ProductDetails = () => {
         )}
       </div>
 
-
       {/* create component feedback product */}
       <Feedback productId={data._id} />
     </div>
-  )
+  );
 }
 
 export default ProductDetails

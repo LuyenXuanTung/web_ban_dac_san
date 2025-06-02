@@ -3,12 +3,12 @@ import { FaStar } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { toast } from "react-toastify";
 import SummaryApi from "../common";
-import { useNavigate} from 'react-router-dom'
+
 
 const FeedbackForm = ({onclose,orderId,fetchProduct}) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
-  const navigate = useNavigate()
+ 
 
   const fetchFeedback = async() => {
     const dataApi = await fetch(SummaryApi.feedBack.url,{
@@ -28,6 +28,7 @@ const FeedbackForm = ({onclose,orderId,fetchProduct}) => {
     const res = await dataApi.json()
     if(res.success){
       toast.success(res.message)
+      fetchProduct()
     }
   }
 

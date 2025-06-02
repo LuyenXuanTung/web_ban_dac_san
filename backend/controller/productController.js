@@ -11,6 +11,7 @@ async function addProduct(req, res) {
 
     const payload = {
       ...req.body,
+      new_price: req.body.price
     }
 
     const addProduct = new product(payload);
@@ -107,6 +108,31 @@ async function updateQuantityProduct(req, res) {
 async function getProductsBestSelling(req, res) {
   try {
     const allProduct = await product.find({total_pay: {$gt: 0}}).sort({total_pay: -1}).limit(5)
+
+    if (!allProduct) {
+      throw new Error("Không có sản phẩm nào");
+    }
+
+    res.json({
+      message: "Các sản phẩm bán chạy",
+      data: allProduct,
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    res.json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
+async function getProductsBestPromotion(req, res) {
+  try {
+    const allProduct = await product.find({ promotion: { $gt: 0 } })
+  .sort({ promotion: -1 })
+  .limit(5);
 
     if (!allProduct) {
       throw new Error("Không có sản phẩm nào");
@@ -413,7 +439,14 @@ async function feedback(req, res) {
     myOrder.markModified('cart_details');
     await myOrder.save();
     
-    
+    const productUpdate = await product.findById(productId);
+    if (!productUpdate) {
+      throw new Error("Sản phẩm không tồn tại");
+    }
+    productUpdate.total_rating += 1;
+    productUpdate.total_stars += rating;
+    await productUpdate.save();
+
 
     res.json({
       message:"Đánh giá thành công",
@@ -435,6 +468,7 @@ module.exports = {
   getAllProductInAdmin,
   updateQuantityProduct,
   getProductsBestSelling,
+  getProductsBestPromotion,
   getProductsById,
   getProductsByManyId,
   setPromotion,

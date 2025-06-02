@@ -22,8 +22,8 @@ const MyOrder = () => {
   
 
   const fetchOrders = async () => {
-    const response = await fetch(SummaryApi.allOrder.url, {
-      method: SummaryApi.allOrder.method,
+    const response = await fetch(SummaryApi.getOrderByUserId.url, {
+      method: SummaryApi.getOrderByUserId.method,
       credentials: "include",
       headers: {
         "content-type": "application/json",
@@ -97,7 +97,6 @@ const MyOrder = () => {
     
   };
 
-  console.log(orders);
   
 
   const handleComment = (orderId,productId,name) => {
@@ -209,6 +208,13 @@ const MyOrder = () => {
                           (p) => order.payment_method === p.value && p.name
                         )}
                       </p>
+                      {
+                        order.receiveNode !== '' && (
+                          <p>
+                            <strong>Ghi chú:</strong> {order.receiveNode}
+                          </p>
+                        )
+                      }
                       <p className="mt-4 text-lg font-bold text-red-600">
                         Tổng cộng: {formatPrice(order.total_price)}
                       </p>
@@ -230,7 +236,7 @@ const MyOrder = () => {
         <FeedbackForm
           onclose={() => setOpenFeedback(false)}
           orderId={orderId}
-          fetchProduct={fetchProduct}
+          fetchProduct={fetchOrders}
         />
       )}
     </>

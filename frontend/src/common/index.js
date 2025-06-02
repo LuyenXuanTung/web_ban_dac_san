@@ -31,6 +31,14 @@ const SummaryApi = {
         url: `${backendDomain}/admin/update-role-user`,
         method: 'post'
     },
+    getSalesByMonth: {
+        url: `${backendDomain}/admin/get-sales-by-month`,
+        method: 'post'
+    },
+    countProductByCategory: {
+        url: `${backendDomain}/admin/count-product-by-category`,
+        method: 'get'
+    },
     deleteUser: {
         url: `${backendDomain}/delete-user`,
         method: 'post'
@@ -53,6 +61,10 @@ const SummaryApi = {
     },
     getProductsBestSelling: {
         url: `${backendDomain}/all-product-best-selling`,
+        method: 'get'
+    },
+    getProductsBestPromotion: {
+        url: `${backendDomain}/all-product-best-promotion`,
         method: 'get'
     },
     getProductsById: {
@@ -121,6 +133,18 @@ const SummaryApi = {
     },
     getFeedBacks: {
         url: `${backendDomain}/get-feedbacks`,
+        method: 'post'
+    },
+    getDashBoard: {
+        url: `${backendDomain}/admin/dash-board`,
+        method: 'get'
+    },
+    getOrderByUserId: {
+        url: `${backendDomain}/get-order-by-user`,
+        method: 'get'
+    },
+    addOrderOnline: {
+        url: `${backendDomain}/payment-result`,
         method: 'post'
     },
 }

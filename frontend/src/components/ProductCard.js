@@ -35,7 +35,7 @@ const ProductCard = ({ product, border }) => {
           </h2>
           <div className="flex items-center justify-between">
             <div className="flex items-center text-yellow-500">
-              <span className="text-gray-500 text-sm mr-1">4.9</span>
+              <span className="text-gray-500 text-sm mr-1">{product?.total_stars > 0 && product?.total_rating > 0 ? (product?.total_stars / product?.total_rating).toFixed(1) : "5.0"}</span>
               <FaStar className="text-sm" />
               <span className="ml-1 text-sm text-gray-500">
                 ({product?.total_pay} đã bán)

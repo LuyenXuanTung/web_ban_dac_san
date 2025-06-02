@@ -10,8 +10,8 @@ const StatCard = ({ name, icon: Icon, value, color }) => {
 				{
                     Icon && (
                         <span className='flex items-center text-sm font-medium text-gray-400'>
-					<Icon size={20} className='mr-2' style={{ color }} />
-					{name}
+					<Icon size={20} className={`mr-2 ${color}`} />
+					<span className="text-gray-100">{name}</span>
 				</span>
                     )
                 }

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import ProductCard from '../components/ProductCard'
-import SummaryApi from '../common'
 
 
-const SectionCard = ({title, bg}) => {
+const SectionCard = ({title, bg, api}) => {
     const [products, setProducts] = useState([])
     const fetchProducts = async () => {
-        const dataApi = await fetch(SummaryApi.getProductsBestSelling.url, {
-            method: SummaryApi.getProductsBestSelling.method,
+        const dataApi = await fetch(api.url, {
+            method: api.method,
             headers: {
                 'content-type': 'application/json'},
             })

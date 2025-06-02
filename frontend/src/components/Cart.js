@@ -77,12 +77,10 @@ const Cart = () => {
                 ))}
               </div>
               <div className="flex gap-2 items-center p-4 border-t">
-                <button className=" flex-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200">
-                  Mua ngay
-                </button>
+            
                 <Link
                   to="/cart"
-                  className="text-green-600 border flex-1 text-center border-green-600 px-4 py-2 rounded hover:bg-green-600 hover:text-white transition duration-200"
+                  className="bg-green-500 flex-1 text-center px-4 py-2 rounded hover:bg-green-600 hover:text-white transition duration-200"
                 >
                   Xem chi tiết
                 </Link>

@@ -1,102 +1,91 @@
-import React, { useContext, useState } from 'react';
-import formatPrice from '../helpers/formatMoney';
-import qrCode from '../assets/Qr_checkout.png';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import SummaryApi from '../common';
-import CountProduct from '../context/countProduct';
-import {useNavigate} from 'react-router-dom'
-import { setUserDetails } from '../store/userSlice';
-import fetchCartItems from '../helpers/fetchCartItems';
+import React, { useContext, useState } from "react";
+import formatPrice from "../helpers/formatMoney";
+import qrCode from "../assets/Qr_checkout.png";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import SummaryApi from "../common";
+import CountProduct from "../context/countProduct";
+import { useNavigate } from "react-router-dom";
+import { setUserDetails } from "../store/userSlice";
+import fetchCartItems from "../helpers/fetchCartItems";
 
-const Checkout = ({calculateTotal, onClose}) => {
-  const [shippingFee, setShippingFee] = useState(30000); 
-  const [paymentMethod, setPaymentMethod] = useState('');
-  const totalPrice = calculateTotal(); 
-  const user = useSelector((state) => state?.user?.user)
-  const { cartItems,setCartItems,fetchCountProductInCart } = useContext(CountProduct)
+const Checkout = ({ calculateTotal, onClose }) => {
+  const [shippingFee, setShippingFee] = useState(30000);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const totalPrice = calculateTotal();
+  const user = useSelector((state) => state?.user?.user);
+  const { cartItems, setCartItems, fetchCountProductInCart } =
+    useContext(CountProduct);
   const cartItemShort = cartItems.map(({ product, ...rest }) => rest);
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-
-  
   const [infoShip, setInfoShip] = useState({
-    receiveName:user?.receiveName,
+    receiveName: user?.receiveName,
     receiveAddress: user?.receiveAddress,
     receivePhone: user?.receivePhone,
-    receiveNode: ''
-  })
+    receiveNode: "",
+  });
 
   const handleOnChangeInfo = (e) => {
-    const {name , value} = e.target
+    const { name, value } = e.target;
 
     setInfoShip((prev) => {
       return {
         ...prev,
-        [name]: value
-      }
-    })
-  }
+        [name]: value,
+      };
+    });
+  };
   const isValid = Object.entries(infoShip)
-  .filter(([key]) => key !== 'receiveNode')
-  .every(([_, value]) => value && value.trim() !== '');
-  
+    .filter(([key]) => key !== "receiveNode")
+    .every(([_, value]) => value && value.trim() !== "");
 
   const calculateTotalWithShipping = () => {
     return totalPrice + shippingFee;
   };
 
   console.log(calculateTotalWithShipping());
-  
+
   const handlePaymentMethodChange = (e) => {
     const method = e.target.value;
     setPaymentMethod(method);
-
   };
 
-  
-
   const handleSubmit = async () => {
+    const orderInfo = {
+      infoShip,
+      paymentMethod,
+      total_price: calculateTotalWithShipping(),
+      cartItemShort,
+    };
 
-    const fetchApi = await fetch(SummaryApi.order.url,{
+    localStorage.setItem("orderInfo", JSON.stringify(orderInfo));
+
+    const fetchApi = await fetch(SummaryApi.order.url, {
       method: SummaryApi.order.method,
-      credentials: 'include',
+      credentials: "include",
       headers: {
-        'content-type': 'application/json'
+        "content-type": "application/json",
       },
-      body: JSON.stringify({
-        infoShip,
-        paymentMethod,
-        total_price: calculateTotalWithShipping(),
-        cartItemShort
-      })
-    }) 
+      body: JSON.stringify(orderInfo),
+    });
 
-    const res = await fetchApi.json()
-    
-    if(res.success){
-      if(res.data){
+    const res = await fetchApi.json();
+
+    if (res.success) {
+      if (res.data) {
         window.location.href = res.data;
-      }
-      
-      else{
-        toast.success(res.message)
-      navigate('/')
-      dispatch(setUserDetails({
-        ...user,
-        receiveName: res.user.receiveName,
-        receiveAddress: res.user.receiveAddress,
-        receivePhone: res.user.receivePhone,
-      }));
-      fetchCountProductInCart()
-      fetchCartItems(setCartItems)
+      } else {
+        toast.success(res.message);
+        navigate("/my-order");
+        dispatch(setUserDetails(res.user));
+        fetchCountProductInCart();
+        fetchCartItems(setCartItems);
+        localStorage.removeItem("orderInfo");
       }
     }
-
-
-
-  }
+  };
 
   return (
     <div className="container mx-auto p-4 grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -117,13 +106,11 @@ const Checkout = ({calculateTotal, onClose}) => {
               placeholder="Nhập họ và tên"
               className="w-full p-2 border rounded"
             />
-            {
-                infoShip.receiveName === '' && (
-                  <label className="text-red-600">
-                  Họ và tên không được để trống
-                </label>
-                )
-             }
+            {infoShip.receiveName === "" && (
+              <label className="text-red-600">
+                Họ và tên không được để trống
+              </label>
+            )}
           </div>
           <div>
             <label htmlFor="address" className="block font-medium mb-1">
@@ -138,13 +125,11 @@ const Checkout = ({calculateTotal, onClose}) => {
               placeholder="Nhập địa chỉ"
               className="w-full p-2 border rounded"
             />
-            {
-                infoShip.receiveAddress === '' && (
-                  <label className="text-red-600">
-                  Địa chỉ không được để trống
-                </label>
-                )
-             }
+            {infoShip.receiveAddress === "" && (
+              <label className="text-red-600">
+                Địa chỉ không được để trống
+              </label>
+            )}
           </div>
           <div>
             <label htmlFor="phone" className="block font-medium mb-1">
@@ -159,13 +144,11 @@ const Checkout = ({calculateTotal, onClose}) => {
               placeholder="Nhập số điện thoại"
               className="w-full p-2 border rounded"
             />
-            {
-                infoShip.receivePhone === '' && (
-                  <label className="text-red-600">
-                  Số điện thoại không được để trống
-                </label>
-                )
-             }
+            {infoShip.receivePhone === "" && (
+              <label className="text-red-600">
+                Số điện thoại không được để trống
+              </label>
+            )}
           </div>
           <div>
             <label htmlFor="note" className="block font-medium mb-1">
@@ -229,14 +212,22 @@ const Checkout = ({calculateTotal, onClose}) => {
 
         {/* QR Code for Online Payment */}
 
-        <div className='flex items-center gap-10'>
-          <button className="w-full border border-red-600 text-red-600 py-2 rounded mt-4 hover:bg-red-700 hover:text-white transition duration-200"
+        <div className="flex items-center gap-10">
+          <button
+            className="w-full border border-red-600 text-red-600 py-2 rounded mt-4 hover:bg-red-700 hover:text-white transition duration-200"
             onClick={onClose}
           >
             Hủy
           </button>
-          <button className={`${paymentMethod !== '' && isValid ? '' : 'cursor-not-allowed'} w-full bg-green-600 text-white py-2 rounded mt-4 hover:bg-green-700 transition duration-200`}
-            onClick={paymentMethod !== '' && isValid ? handleSubmit : () => toast.error("Vui lòng cung cấp đủ thông tin")}
+          <button
+            className={`${
+              paymentMethod !== "" && isValid ? "" : "cursor-not-allowed"
+            } w-full bg-green-600 text-white py-2 rounded mt-4 hover:bg-green-700 transition duration-200`}
+            onClick={
+              paymentMethod !== "" && isValid
+                ? handleSubmit
+                : () => toast.error("Vui lòng cung cấp đủ thông tin")
+            }
           >
             Đặt hàng
           </button>

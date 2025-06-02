@@ -9,7 +9,7 @@ const {
   deleteUser,
 } = require("../controller/userController");
 const authToken = require("../middleware/authToken");
-const { getAdmin } = require("../controller/adminController");
+const { getAdmin, getDashBoard, getSalesByMonth, countProductByCategory } = require("../controller/adminController");
 const {
   addProduct,
   getAllProduct,
@@ -24,9 +24,10 @@ const {
   deleteProduct,
   getAllProductInAdmin,
   feedback,
+  getProductsBestPromotion,
 } = require("../controller/productController");
 const { addToCart, countProductInCart, getCart, updateQuantity, removeProductCart } = require("../controller/cartController");
-const { addOrder, getOrder, setStatusOrder } = require("../controller/orderController");
+const { addOrder, getOrder, setStatusOrder, getOrderByUserId, addOrderOnline } = require("../controller/orderController");
 const { getFeedbackByProductId } = require("../controller/feedbackController");
 
 const router = express.Router();
@@ -43,6 +44,12 @@ router.post("/delete-user", authToken, deleteUser);
 router.get("/admin", authToken, getAdmin);
 router.get("/admin/users", authToken, getAllUser);
 router.post("/admin/update-role-user", authToken, updateRoleUser);
+router.get("/admin/dash-board", authToken, getDashBoard);
+router.post("/admin/get-sales-by-month", authToken, getSalesByMonth);
+router.get("/admin/count-product-by-category", authToken, countProductByCategory);
+
+
+
 
 //product
 router.post("/add-product", authToken, addProduct);
@@ -50,6 +57,7 @@ router.post("/update-quantity-product", authToken, updateQuantityProduct);
 router.get("/all-product", getAllProduct);
 router.get("/all-product-admin",authToken, getAllProductInAdmin);
 router.get("/all-product-best-selling", getProductsBestSelling);
+router.get("/all-product-best-promotion", getProductsBestPromotion);
 router.post("/product-details/:id", getProductsById);
 router.post("/products-many-id", getProductsByManyId);
 router.post("/setPromotion", authToken, setPromotion);
@@ -73,6 +81,8 @@ router.post("/remove-product-cart", authToken, removeProductCart);
 router.post("/order", authToken, addOrder);
 router.get("/all-order", authToken, getOrder);
 router.post("/status-order", authToken, setStatusOrder);
+router.get("/get-order-by-user", authToken, getOrderByUserId);
+router.post("/payment-result",authToken, addOrderOnline)
 
 
 //feedback

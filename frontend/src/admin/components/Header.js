@@ -28,6 +28,7 @@ const Header = ({show, wFull, wShort, handleNavbar}) => {
       toast.success(dataResponse.message)
       navigate('/')
       dispatch(setUserDetails(null))
+      localStorage.removeItem('user')
     }
   }
 

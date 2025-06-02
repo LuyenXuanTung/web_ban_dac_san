@@ -53,18 +53,82 @@ async function addOrder(req, res) {
           vnp_TxnRef: findCart._id,
           vnp_OrderInfo: `${findCart._id}`,
           vnp_OrderType: ProductCode.Other,
-          vnp_ReturnUrl: `http://localhost:8080/api/check-payment-vnpay`,
+          vnp_ReturnUrl: `http://localhost:3000/payment-result`,
           vnp_Locale: VnpLocale.VN, // 'vn' hoac 'en
           vnp_CreateDate: dateFormat(new Date()), // tuy chon, mac đinh la hiện
           vnp_ExpireDate: dateFormat(tomorrow),
         });
 
+        
         return res.status(201).json({
         data: vnpayResponse,
         success: true,
         error: false,
       })
       }
+
+      const payload = {
+        user: userCurent,
+        total_price: total_price,
+        payment_method: paymentMethod,
+        receiveNode: infoShip.receiveNode,
+        cart_details: cartItemShort
+      }
+      
+
+      const newOrder = new order(payload)
+      await newOrder.save()
+
+      const cartUser = await cart.findOne({userId: userCurent._id})
+
+      const updateQuantity = await cartDetail.find({cartId: cartUser._id})
+      
+      updateQuantity.forEach(async (p) => {
+        const udProduct = await product.findById(p.productId)
+        udProduct.quantity -= p.quantity
+        udProduct.total_pay += p.quantity
+        await udProduct.save()
+      })
+
+      await cartDetail.deleteMany({
+        cartId: cartUser._id,
+      });
+  
+      res.json({
+        message: "Đặt hàng thành công",
+        user: userCurent,
+        success: true,
+        error: false,
+      });
+    } catch (error) {
+      res.json({
+        message: error.message || error,
+        error: true,
+        success: false,
+      });
+    }
+}
+
+async function addOrderOnline(req, res) {
+    try {
+      const userCurent = await user.findById(req.userId)
+      if(!userCurent){
+        throw new Error('Người dùng không tồn tại')
+      }
+
+
+      const { infoShip,total_price,paymentMethod,cartItemShort } = req.body
+      
+      
+      userCurent.receiveName = infoShip.receiveName
+      userCurent.receiveAddress = infoShip.receiveAddress
+      userCurent.receivePhone = infoShip.receivePhone
+      await userCurent.save()
+
+      cartItemShort.forEach((p) => {
+        p.isRating = false;
+      });
+
 
       const payload = {
         user: userCurent,
@@ -147,6 +211,15 @@ async function setStatusOrder(req, res) {
     }
 
     cartCurrent.status = value
+
+    for (const p of cartCurrent.cart_details) {
+      const productCurrent = await product.findById(p.productId);
+      if (productCurrent) {
+        productCurrent.quantity += p.quantity;
+        await productCurrent.save();
+      }
+    }
+
     await cartCurrent.save()
 
     let message = ''
@@ -181,8 +254,37 @@ async function setStatusOrder(req, res) {
   }
 }
 
+async function getOrderByUserId(req, res) {
+  try {
+    const userCurrent = await user.findById(req.userId);
+    if (!userCurrent) {
+      throw new Error("Người dùng không tồn tại");
+    }
+   
+
+    const allOrder = await order.find({ "user._id": userCurrent._id });
+    console.log("all",allOrder);
+    allOrder.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    res.json({
+      message: "Lấy các đơn đặt hàng",
+      data: allOrder,
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    res.json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
 module.exports = {
     addOrder,
+    addOrderOnline,
     getOrder,
-    setStatusOrder
+    setStatusOrder,
+    getOrderByUserId
 }

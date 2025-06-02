@@ -159,7 +159,7 @@ const Cart = () => {
                           {formatPrice(item.total_price)}
                         </p>
                         <button
-                          className="text-red-600 bg-red-100 px-3 py-1 rounded-md hover:text-red-800"
+                          className="text-red-600 bg-red-100 px-3 py-1 rounded-md hover:text-red-800 hover:bg-red-200 transition duration-200"
                           onClick={() => handleRemoveItem(item.product._id)}
                         >
                           Xóa

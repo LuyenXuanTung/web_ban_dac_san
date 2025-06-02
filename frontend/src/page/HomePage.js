@@ -1,6 +1,7 @@
 import React, { use, useEffect } from 'react'
 import Banner from '../components/Banner'
 import SectionCard from '../components/SectionCard'
+import SummaryApi from '../common'
 
 const HomePage = () => {
   useEffect(() => {
@@ -19,7 +20,9 @@ const HomePage = () => {
           </h1>
         </div>
 
-        <SectionCard title={"sản phẩm bán chạy"} bg={'bg-green-100'}/>
+        <SectionCard title={"sản phẩm bán chạy"} bg={'bg-green-100'} api={SummaryApi.getProductsBestSelling}/>
+
+        <SectionCard title={"sản phẩm giảm giá cao nhất"} bg={'bg-green-100'} api={SummaryApi.getProductsBestPromotion}/>
           
           
       </div>

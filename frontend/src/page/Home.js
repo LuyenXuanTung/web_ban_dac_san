@@ -52,7 +52,7 @@ const Home = () => {
         }}
       >
         <Header />
-        <main className="min-h-[calc(100vh-120px+60px)] pt-32">
+        <main className="min-h-[calc(100vh-120px+60px)] pt-24">
           <Outlet />
         </main>
         <Footer />

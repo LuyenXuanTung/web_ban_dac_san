@@ -38,7 +38,7 @@ const FilterProduct = ({label, select, down, up, setProducts}) => {
         </div>
        
         <div className='border-t-4 border-green-600 w-8 my-2'></div>
-        <div className={`${openDropDown ? 'h-fit' : 'max-h-28' } transition-all`}>
+        <div className={`${openDropDown ? 'h-fit' : 'max-h-40' } transition-all`}>
             {
                 select.sort((a,b) => a.localeCompare(b)).map((pro, index) => {
                     return (
