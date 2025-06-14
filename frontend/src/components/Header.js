@@ -9,10 +9,18 @@ import { setUserDetails } from "../store/userSlice";
 import { toast } from 'react-toastify';
 import SearchProduct from './SearchProduct';
 import Cart from './Cart';
-import { useEffect } from 'react';
 
 
-
+const high_category = [
+  {
+    name: "Bán chạy",
+    id: "best-selling"
+  },
+  {
+    name: "Khuyến mãi",
+    id: "best-promotion"
+  },
+]
 const Header = () => {
 
   const user = useSelector((state) => state?.user?.user)
@@ -48,24 +56,10 @@ const Header = () => {
             </Link>
           </div>
 
-          <div className='hidden lg:flex items-center gap-10 text-black pr-4'>
-            <Link
-              to={"/"}
-              className="hover:text-green-600 text-lg cursor-pointer font-semibold"
-            >
-              Trang chủ
-            </Link>
-            <Link
-              to={"/product"}
-              className="hover:text-green-600 text-lg cursor-pointer font-semibold"
-            >
-              Sản phẩm
-            </Link>
-          </div>
 
           <SearchProduct />
 
-          <div className="flex min-w-[160px] justify-end text-sm text-white items-center">
+          <div className="flex min-w-[220px] justify-end text-sm text-white items-center">
             {user?._id && <Cart />}
 
             <div className='className="p-3 rounded-full bg-green-600 cursor-pointer hover:bg-green-700'>
@@ -104,7 +98,7 @@ const Header = () => {
             </div>
           </div>
         </div>
-        {/* <div className="bg-slate-100 md:h-fit w-full shadow-md">
+        <div className="bg-slate-100 md:h-fit w-full shadow-md">
           <div className="container mx-auto px-4 flex justify-between items-center h-full">
             <div className="category max-w-[250px] bg-green-600 text-white p-2 relative">
               <h3 className="flex items-center cursor-default">
@@ -118,17 +112,45 @@ const Header = () => {
               </h3>
 
               <div className="category-list hidden absolute top-[100%] left-0 bg-white text-black w-full shadow-xl pb-4">
-                {category.map((c, index) => {
+                {high_category.map((c, index) => {
                   return (
-                    <div className="py-2 px-4 border-t-[1px] border-slate-200 cursor-pointer hover:bg-slate-200 ">
-                      <h3>{c}</h3>
+                    <div
+                      className="py-2 px-4 border-t-[1px] border-slate-200 cursor-pointer hover:bg-slate-200 "
+                      key={index}
+                      onClick={() => {
+                        navigate("/");
+                        setTimeout(() => {
+                          const element = document.getElementById(c.id);
+                          if (element) {
+                            const y =
+                              element.getBoundingClientRect().top +
+                              window.pageYOffset -
+                              150;
+                            window.scrollTo({ top: y, behavior: "smooth" });
+                          }
+                        }, 100);
+                      }}
+                    >
+                      <h3>{c.name}</h3>
                     </div>
                   );
                 })}
               </div>
-            </div> *
+            </div> 
 
              <div className="flex gap-12 text-black">
+              <Link
+              to={"/"}
+              className="hover:text-green-600 cursor-pointer font-semibold"
+            >
+              Trang chủ
+            </Link>
+            <Link
+              to={"/product"}
+              className="hover:text-green-600 cursor-pointer font-semibold"
+            >
+              Sản phẩm
+            </Link>
               <div className="hover:text-green-600 cursor-pointer font-semibold">
                 Giới thiệu
               </div>
@@ -137,7 +159,7 @@ const Header = () => {
               </div>
             </div>
           </div>
-        </div> */}
+        </div>
       </header>
     </>
   );

@@ -20,14 +20,26 @@ const HomePage = () => {
           </h1>
         </div>
 
-        <SectionCard title={"sản phẩm bán chạy"} bg={'bg-green-100'} api={SummaryApi.getProductsBestSelling}/>
+        <div id="best-selling">
+          {" "}
+          <SectionCard
+            title={"sản phẩm bán chạy"}
+            bg={"bg-green-100"}
+            api={SummaryApi.getProductsBestSelling}
+          />
+        </div>
 
-        <SectionCard title={"sản phẩm giảm giá cao nhất"} bg={'bg-green-100'} api={SummaryApi.getProductsBestPromotion}/>
-          
-          
+        <div id="best-promotion">
+          {" "}
+          <SectionCard
+            title={"sản phẩm giảm giá cao nhất"}
+            bg={"bg-green-100"}
+            api={SummaryApi.getProductsBestPromotion}
+          />
+        </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default HomePage
